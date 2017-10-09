@@ -40,7 +40,7 @@ namespace Phoenix.Core.Infrastructure.Windsor
                
         private static DefaultServiceModel GetServiceModel(IWindsorContainer container, WcfTypePair wcfServiceTypePair)
         {
-            var baseAddress = $"https://{Environment.MachineName}:3000/services";
+            var baseAddress = $"https://{Environment.MachineName}:808/services";
             var endpointAddress = baseAddress + wcfServiceTypePair.Implementation.Name;
             var address = new EndpointAddress(endpointAddress);
             
