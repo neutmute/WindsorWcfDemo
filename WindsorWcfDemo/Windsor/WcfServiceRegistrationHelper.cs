@@ -19,8 +19,6 @@ namespace Phoenix.Core.Infrastructure.Windsor
                 .For(wcfServiceTypePair.Interface)
                 .ImplementedBy(wcfServiceTypePair.Implementation)
                 .Named(wcfServiceTypePair.Implementation.Name)
-                //.Interceptors<LoggingInterceptor>()
-                //.Interceptors<ExceptionHandlerInterceptor>()
                 .LifeStyle.Transient
                 .OnDestroy(service =>
                 {
@@ -40,7 +38,7 @@ namespace Phoenix.Core.Infrastructure.Windsor
                
         private static DefaultServiceModel GetServiceModel(IWindsorContainer container, WcfTypePair wcfServiceTypePair)
         {
-            var baseAddress = $"https://localhost:808/Services/";
+            var baseAddress = $"https://localhost:443/Services/";
             var endpointAddress = baseAddress + wcfServiceTypePair.Implementation.Name;
             var address = new EndpointAddress(endpointAddress);
             
@@ -56,34 +54,10 @@ namespace Phoenix.Core.Infrastructure.Windsor
                 string mexEndpointAddress = endpointAddress + "/mex/";
                 model.AddExtensions(new WcfMetadataExtension().AtAddress(mexEndpointAddress));
             }
-
-            //model.PublishMetadata(o => o.EnableHttpGet());
-            
-          //  model.AddExtensions(container.GetServiceCredentials());
-   
+               
             return model;
         }
-
-        //private static ServiceCredentials GetServiceCredentials(this IWindsorContainer container)
-        //{
-        //    var serviceCredentials = new ServiceCredentials();
-        //    var settings = container.Resolve<IConfigSetting>();
-        //    var log = container.Resolve<ILogWriter>();
-
-        //    // Configure service certificate
-        //    serviceCredentials.ServiceCertificate.SetCertificate(
-        //        StoreLocation.LocalMachine,
-        //        StoreName.My,
-        //        X509FindType.FindBySubjectName,
-        //        settings.CertificateFriendlyName);
-
-        //    // Add custom certificate validator
-        //    serviceCredentials.ClientCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.Custom;
-        //    serviceCredentials.ClientCertificate.Authentication.CustomCertificateValidator = new PhoenixX509CertificateValidator(log, settings);
-     
-        //    return serviceCredentials;
-        //}
-
+        
         private static void HandleProxy(IWindsorContainer container, ICommunicationObject proxy)
         {
             if (proxy != null)

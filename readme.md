@@ -1,5 +1,5 @@
 # Windsor WCF Demo
 
-`netsh http add urlacl url=http://+:808/Services user=Everyone`   
 
-https://localhost:808/services/myservice.svc
+1. Create user account for app pool
+2. Browse to `https://localhost:443/services/myservice.svc`
