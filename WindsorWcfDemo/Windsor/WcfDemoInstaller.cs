@@ -23,29 +23,13 @@ namespace WindsorWcfDemo
             var serviceModels = GetWcfServceTypes()
                                 .Select(container.RegisterWcfService)
                                 .ToList();
-
-            var sb = new StringBuilder();
-            foreach (var serviceModel in serviceModels)
-            {
-                var endpointsList = serviceModel
-                                        .Endpoints
-                                        .Cast<BindingAddressEndpointModel>()
-                                        .Select(m => m.Address);
-
-                var baseAddresses = string.Join(";", serviceModel.BaseAddresses);
-                var endpoints = string.Join(";", endpointsList);
-                sb.AppendLine($"BaseAddresses=[{baseAddresses}], Endpoints=[{endpoints}], Extensions.Count={serviceModel.Extensions.Count}");
-            }
         }
         
         internal static List<WcfTypePair> GetWcfServceTypes()
         {
-            var pairs = new List<WcfTypePair>();
-
-            pairs.Add(WcfTypePair.Factory<IMyService, MyService>());
-
-            pairs.Sort((x, y) => string.CompareOrdinal(x.Implementation.Name, y.Implementation.Name));
-
+            var pairs = new List<WcfTypePair> {
+                WcfTypePair.Factory<IMyService, MyService>()
+            };
             return pairs;
         }
         

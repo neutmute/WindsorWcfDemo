@@ -14,21 +14,10 @@ namespace Phoenix.Core.Infrastructure.Windsor
          {
             var serviceModel = GetServiceModel(container, wcfServiceTypePair);
 
-
             var componentReg = Component
                 .For(wcfServiceTypePair.Interface)
                 .ImplementedBy(wcfServiceTypePair.Implementation)
                 .Named(wcfServiceTypePair.Implementation.Name)
-                .LifeStyle.Transient
-                .OnDestroy(service =>
-                {
-                    var channel = service as IServiceChannel;
-
-                    if (channel?.State == CommunicationState.Faulted)
-                    {
-                        channel.Abort();
-                    }
-                })
                 .AsWcfService(serviceModel);
 
             container.Register(componentReg);
@@ -46,50 +35,15 @@ namespace Phoenix.Core.Infrastructure.Windsor
             var endpoint = WcfEndpoint.BoundTo(wsHttpBinding).At(address);
 
             var model = new DefaultServiceModel()
-                            .OnFaulted(h => HandleProxy(container, h))
                             .AddEndpoints(endpoint);
             
-            if (true)
+            if (false)
             {
-                string mexEndpointAddress = endpointAddress + "/mex/";
+                var mexEndpointAddress = endpointAddress + "/mex/";
                 model.AddExtensions(new WcfMetadataExtension().AtAddress(mexEndpointAddress));
             }
                
             return model;
-        }
-        
-        private static void HandleProxy(IWindsorContainer container, ICommunicationObject proxy)
-        {
-            if (proxy != null)
-            {
-                try
-                {
-                    if (proxy.State != CommunicationState.Faulted)
-                    {
-                        try
-                        {
-                            proxy.Close();
-                        }
-                        catch (CommunicationException e)
-                        {
-                            proxy.Abort();
-
-                        }
-                    }
-                    else
-                    {
-                        proxy.Abort();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    proxy.Abort();
-                }
-                finally
-                {
-                    proxy = null;
-                }
-            }
         }
     }
 }

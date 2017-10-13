@@ -87,8 +87,7 @@ namespace WindsorWcfDemo.Windsor
             }
             else
             {
-                throw new Exception("the base binding does not " +
-                                    "have ReliableSessionBindingElement");
+                throw new Exception("the base binding does not have ReliableSessionBindingElement");
             }
         }
     }
